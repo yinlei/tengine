@@ -6,8 +6,11 @@ extern "C"
 #include "ccmalloc.h"
 }
 
-#include <array>
+#include <cstddef>
+#include <new>
+#include <utility>
 #include <memory>
+#include <array>
 
 namespace tengine
 {
@@ -22,6 +25,51 @@ namespace tengine
 		static void operator delete(void *ptr)
 		{
 			ccfree(ptr);
+		}
+	};
+
+	template<typename T>
+	struct STLAllocator : public Allocator
+	{
+		using value_type = T;
+		using pointer = T*;
+		using const_pointer = const T*;
+		using reference = T&;
+		using const_reference = const T&;
+		using size_type = std::size_t;
+		using difference_type = std::ptrdiff_t;
+
+		STLAllocator() = default;
+
+		template<typename U>
+		STLAllocator(const STLAllocator<U>&) {}
+
+		template<typename U>
+		struct rebind {using other = STLAllocator<U>; };
+
+		T* allocate(size_type n)
+		{
+			size_type size = sizeof(T) * n;
+
+			return reinterpret_cast<T*>(operator new(size));
+		}
+
+		void deallocate(T* ptr, size_type n)
+		{
+			size_type size = sizeof(T) * n;
+			operator delete(ptr);
+		}
+
+		template<class U, class... Args>
+		void construct(U* p, Args&&... args)
+		{
+			new ((void*)p) U(std::forward<Args>(args)...);
+		}
+
+		template<class U>
+		void destory(U* p)
+		{
+			p->~U();
 		}
 	};
 
