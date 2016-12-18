@@ -2,7 +2,7 @@
 
 #include "system_info.hpp"
 
-namespace ccactor {
+namespace tengine {
 
 	ProcessInfo::ProcessInfo()
 		: process_(kNullProcessHandle)
@@ -47,4 +47,4 @@ namespace ccactor {
 	}
 
 
-}	//namespace ccactor
+}	//namespace tengine

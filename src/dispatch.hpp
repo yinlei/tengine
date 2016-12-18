@@ -51,7 +51,7 @@ namespace tengine
 		{
 			T* self = reinterpret_cast<T*>(sto);
 
-			self->handler<MessageType>(from, args...);
+			//self->handler<MessageType>(from, args...);
 		});
 	}
 }

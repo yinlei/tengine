@@ -1,6 +1,6 @@
 #include "system_info.hpp"
 
-namespace ccactor {
+namespace tengine {
 
 	int	SystemInfo::count_of_processors()
 	{
@@ -17,4 +17,4 @@ namespace ccactor {
 		return "Linux";
 	}
 
-}	//	namespace ccactor
+}	//	namespace tengine
