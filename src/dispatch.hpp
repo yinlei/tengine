@@ -9,7 +9,7 @@
 namespace tengine
 {
 	template<class T, class... Args>
-	static void dispatch(Context& context, int from, int to, Args... args)
+	static void dispatch(Context& context, int from, int to, Args&&... args)
 	{
 		T *sto = reinterpret_cast<T*>(context.query(to));
 		if (!sto)
@@ -18,13 +18,13 @@ namespace tengine
 		asio::post(sto->executor(),
 			[=]
 		{
-			// sto->handler(from, std::forward<Args>(args)...);
+			//sto->handler(from, std::forward<Args>(args)...);
 			sto->handler(from, args...);
 		});
 	}
 
 	template<int MessageType, class T, class... Args>
-	static void dispatch(Service *sfrom, const int to, Args... args)
+	static void dispatch(Service *sfrom, const int to, Args&&... args)
 	{
 		if (!sfrom)
 			return;
@@ -35,11 +35,12 @@ namespace tengine
 		if (!sto)
 			return;
 
-		dispatch<MessageType, T>(sfrom, sto, args...);
+		//dispatch<MessageType, T>(sfrom, sto, args...);
+		dispatch<MessageType, T>(sfrom, sto, std::forward<Args>(args)...);
 	}
 
 	template<int MessageType, class T, class... Args>
-	static void dispatch(Service *sfrom, Service* sto, Args... args)
+	static void dispatch(Service *sfrom, Service* sto, Args&&... args)
 	{
 		if (!sfrom || !sto)
 			return;
@@ -51,7 +52,7 @@ namespace tengine
 		{
 			T* self = reinterpret_cast<T*>(sto);
 
-			//self->handler<MessageType>(from, args...);
+			self->handler<MessageType>(from, std::forward<Args>(args)...);
 		});
 	}
 }
