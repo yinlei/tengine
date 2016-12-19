@@ -1,6 +1,5 @@
-fw = fw or {}
 
-local Object = fw.Object
+local Object = tengine.Object
 --------------------------------------------------------------------------------
 --[[
 This class can be used directly whenever an event emitter is needed.
@@ -26,7 +25,7 @@ the beginning its parameter list.
     emitter:emit('end', 'a', 'b', 'c')
 ]]
 local Emitter = Object:extend()
-fw.Emitter = Emitter
+tengine.Emitter = Emitter
 
 -- By default, any error events that are not listened for should throw errors
 function Emitter:missingHandlerType(name, ...)

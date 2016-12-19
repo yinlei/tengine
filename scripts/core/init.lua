@@ -5,10 +5,12 @@ local _PACKAGE = string.gsub(...,"%.","/") or ""
 
 local require, xpcall, coroutine, debug = require, xpcall, coroutine, debug
 
-local ERROR_MSG = fw.ERROR_MSG
+local ERROR_MSG = tengine.ERROR_MSG
+
+tengine = tengine or {}
 
 --  coroutine start
-fw.start = function(f, ...)
+tengine.start = function(f, ...)
 	coroutine.wrap(function(...)
             local success, failure = xpcall(f, debug.traceback, ...)
             if not success then
@@ -18,7 +20,7 @@ fw.start = function(f, ...)
 end
 
 -- coroutine wrap
-fw.wrap = function(f)
+tengine.wrap = function(f)
     return coroutine.wrap(function(...)
             local succ, err = xpcall(f, debug.traceback, ...)
             if not succ then

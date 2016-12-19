@@ -1,12 +1,10 @@
 --------------------------------------------------------------------------------
 -- leak
 --------------------------------------------------------------------------------
-local type = type
-local pairs = pairs
-local tostring = tostring
-local setmetatable = setmetatable
+local type, pairs, tostring, setmetatable = 
+    type, pairs, tostring, setmetatable
 
-local p = fw.p
+local p = tengine.p
 
 local findedObjMap = nil
 

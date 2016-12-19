@@ -1,4 +1,3 @@
-fw = fw or {}
 
 --[[
 Returns whether obj is instance of class or not.
@@ -21,7 +20,7 @@ Caveats: This function returns true for classes.
     assert(instanceof(Object, Object))
     assert(instanceof(Emitter, Object))
 ]]
-function fw.instanceof(obj, class)
+function tengine.instanceof(obj, class)
   if type(obj) ~= 'table' or obj.meta == nil or not class then
     return false
   end
@@ -47,7 +46,7 @@ This is the most basic object in Luvit. It provides simple prototypal
 inheritance and inheritable constructors. All other objects inherit from this.
 ]]
 local Object = {}
-fw.Object = Object
+tengine.Object = Object
 Object.meta = {__index = Object}
 
 -- Create a new instance of this object

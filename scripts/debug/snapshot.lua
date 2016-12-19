@@ -6,8 +6,6 @@ local assert = assert
 
 local snapshot = require "snapshot"
 
-local p = fw.p
-
 local snapshots = {}
 
 local function make()
