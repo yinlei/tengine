@@ -28,7 +28,7 @@ local inspect = tengine.inspect
 
 local function p(...)
     if DEBUG then
-        if fw.is_windows then
+        if tengine.is_windows then
             log(-1, inspect({...}))
         else
             log(-1, pretty(...))
