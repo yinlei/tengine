@@ -35,8 +35,8 @@ namespace tengine
 		if (!sto)
 			return;
 
-		//dispatch<MessageType, T>(sfrom, sto, args...);
-		dispatch<MessageType, T>(sfrom, sto, std::forward<Args>(args)...);
+		dispatch<MessageType, T>(sfrom, sto, args...);
+		//dispatch<MessageType, T>(sfrom, sto, std::forward<Args>(args)...);
 	}
 
 	template<int MessageType, class T, class... Args>
@@ -52,7 +52,8 @@ namespace tengine
 		{
 			T* self = reinterpret_cast<T*>(sto);
 
-			self->handler<MessageType>(from, std::forward<Args>(args)...);
+			//self->handler<MessageType>(from, std::forward<Args>(args)...);
+			self->handler<MessageType>(from, args...);
 		});
 	}
 }

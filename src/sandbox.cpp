@@ -191,6 +191,12 @@ namespace tengine
 		if (luaL_dostring(L, load_path) != 0)
 			return -1;
 
+		const char* c_path = context_.config("c_path", "");
+		sprintf(load_path, "package.cpath=package.cpath..';%s/'\0", c_path);	
+
+		if (luaL_dostring(L, load_path) != 0)
+			return -1;
+
 		static const char * scripts = "\
 		coroutine.wrap(function()\
 			local success, failure = xpcall(function() require 'main' end, debug.traceback)\
