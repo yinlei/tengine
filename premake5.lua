@@ -58,20 +58,28 @@ workspace "ALL"
     filter{}
 
 if _OPTIONS["lua"] == "lua53" then
-
-project "lua"
-	kind "StaticLib"
-	language "C"
-	includedirs {
-		"./deps/lua/src",
-	}
-	files {
-		"./deps/lua/src/*.c",
-	}
-	removefiles {
-		"./deps/lua/src/luac.c",
-		"./deps/lua/src/lua.c",
-	}
+	project "lua"
+		if os.is("windows") then
+			kind "SharedLib"
+			defines {
+				"LUA_BUILD_AS_DLL",
+			}
+		else
+			kind "StaticLib"
+		end
+		
+		language "C"
+		targetdir "./bin"
+		includedirs {
+			"./deps/lua/src",
+		}
+		files {
+			"./deps/lua/src/*.c",
+		}
+		removefiles {
+			"./deps/lua/src/luac.c",
+			"./deps/lua/src/lua.c",
+		}
 end
 
 project "hiredis"
@@ -145,10 +153,8 @@ project "tengine"
 
 	files {
 		"./deps/lpeg-1.0.0/*c",
-		"./deps/lua-md5/*.c",
 		"./deps/lua-snapshot/*.c",
 		"./deps/lua-cmsgpack/*.c",
-		"./deps/aoi/*.c",
 	}
 
 	-- lua-cjson

@@ -14,7 +14,6 @@
 #include "lua-cjson/lua_cjson.h"
 #include "lua-snapshot/snapshot.h"
 #include "lua-cmsgpack/lua_cmsgpack.h"
-#include "aoi/lua_aoi.h"
 
 #ifdef LUA_JIT
 #define ltablib_c
@@ -174,9 +173,6 @@ namespace tengine
 
 		luaL_requiref(L, "snapshot", luaopen_snapshot, 0);
 		lua_pop(L, 1);
-
-        luaL_requiref(L, "aoi.c", luaopen_aoi_c, 0);
-        lua_pop(L, 1);
 
 		const char* path = context_.config("lua_path", "./scripts");
 
