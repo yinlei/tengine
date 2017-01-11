@@ -19,6 +19,38 @@ namespace tengine
 
 	typedef Service* ServiceAddress;
 
+	enum MessageType : unsigned long
+	{
+		kMessageNone,
+		kMessageTimer,
+		kMessageLogger,
+
+		kMessageTcpServerAccept,
+		kMessageTcpServerRead,
+		kMessageTcpServerClosed,
+
+		kMessageUdpServerRead,
+
+		kMessageChannelConnected,
+		kMessageChannelRead,
+		kMessageChannelClosed,
+
+		kMessageUdpChannelRead,
+		kMessageUdpSenderRead,
+
+		kMessageServiceRequest,
+		kMessageServiceResponse,
+
+		kMessageInternal,
+
+		kMessageCount,
+	};
+
+	template<int T>
+	struct MessageTypeTrait {
+		//static_assert(T < MessageType::kMessageCount && T > 0, "T must be less than MessageType.");
+	};
+
 	class Service : public Allocator
 	{
 	public:

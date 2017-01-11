@@ -69,6 +69,6 @@ namespace tengine {
 		ProcessHandle process_;
 	};
 
-}	//namespace base
+}	//namespace tengine
 
 #endif // !TENGINE_PROCESS_INFO_HPP

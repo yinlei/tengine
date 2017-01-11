@@ -81,32 +81,6 @@ namespace tengine
 		int message_type_;
 		std::type_index trait_type_;
 	};
-
-	enum MessageType : unsigned long
-	{
-		kMessageNone,
-		kMessageTimer,
-		kMessageLogger,
-
-		kMessageTcpServerAccept,
-		kMessageTcpServerRead,
-		kMessageTcpServerClosed,
-
-		kMessageUdpServerRead,
-
-		kMessageChannelConnected,
-		kMessageChannelRead,
-		kMessageChannelClosed,
-
-		kMessageUdpChannelRead,
-		kMessageUdpSenderRead,
-
-		kMessageServiceRequest,
-		kMessageServiceResponse,
-
-		kMessageInternal,
-	};
-
 }
 
 #endif

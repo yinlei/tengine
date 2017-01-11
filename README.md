@@ -2,6 +2,29 @@
 
 tengine
 
+## 编译引擎
+
+### window
+
+  ```
+  build.bat
+  ```
+
+### linux
+    首先安装mysqlclient库
+  ```
+  sudo apt install libmysqlclient-dev
+  ```
+    
+    编译
+  ```
+  ./premake gmake
+
+  cd build
+
+  make config=debug64
+  ```
+
 ## 创建引擎运行环境
 
 ```

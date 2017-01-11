@@ -2,7 +2,6 @@
 #define TENGINE_SANDBOX_HPP
 
 #include "service.hpp"
-
 #include "channel.hpp"
 
 #include <map>
@@ -13,7 +12,6 @@ namespace fs = std::tr2::sys;
 #else
 namespace fs = std::experimental::filesystem;
 #endif
-
 
 struct lua_State;
 
@@ -43,7 +41,7 @@ namespace tengine
 	public:
 
 		template<int MessageType, class... Args>
-		void handler(int src, Args... args);
+		void handler(MessageTypeTrait<MessageType>, int src, Args... args);
 
 		void handler(int src, const fs::path &path, void* data);
 
@@ -101,7 +99,7 @@ namespace tengine
 
 	// timer
 	template<>
-	inline void SandBox::handler<MessageType::kMessageTimer>(
+	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageTimer>,
 		int src, void* timer_id, int session)
 	{
 		timer(timer_id, session);
@@ -109,21 +107,21 @@ namespace tengine
 
 	// server
 	template<>
-	inline void SandBox::handler<MessageType::kMessageTcpServerAccept>(int src,
+	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageTcpServerAccept>, int src,
 		void* sender, int session)
 	{
 		server_accept(sender, session);
 	}
 
 	template<>
-	inline void SandBox::handler<MessageType::kMessageTcpServerRead>(int src,
+	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageTcpServerRead>, int src,
 		void* sender, int session, const char* data, std::size_t size)
 	{
 		server_read(sender, session, data, size);
 	}
 
 	template<>
-	inline void SandBox::handler<MessageType::kMessageTcpServerClosed>(int src,
+	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageTcpServerClosed>, int src,
 		void* sender, int session, const char* error)
 	{
 		server_closed(sender, session, error);
@@ -131,21 +129,21 @@ namespace tengine
 
 	// channel
 	template<>
-	inline void SandBox::handler<MessageType::kMessageChannelConnected>(int src,
+	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageChannelConnected>, int src,
 		void* sender)
 	{
 		channel_connected(sender);
 	}
 
 	template<>
-	inline void SandBox::handler<MessageType::kMessageChannelRead>(int src,
+	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageChannelRead>, int src,
 		void* sender, const char* data, std::size_t size)
 	{
 		channel_read(sender, data, size);
 	}
 
 	template<>
-	inline void SandBox::handler<MessageType::kMessageChannelClosed>(int src,
+	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageChannelClosed>, int src,
 		void* sender, const char* error)
 	{
 		channel_closed(sender, error);
@@ -153,7 +151,7 @@ namespace tengine
 
 	// udp
 	template<>
-	inline void SandBox::handler<MessageType::kMessageUdpServerRead>(int src,
+	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageUdpServerRead>, int src,
 		void* sender, std::string address, uint16_t port, const char* data,
 		std::size_t size)
 	{
@@ -161,7 +159,7 @@ namespace tengine
 	}
 
 	template<>
-	inline void SandBox::handler<MessageType::kMessageUdpChannelRead>(int src,
+	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageUdpChannelRead>, int src,
 		void* sender, std::string address, uint16_t port, const char* data,
 		std::size_t size)
 	{
@@ -169,7 +167,7 @@ namespace tengine
 	}
 
 	template<>
-	inline void SandBox::handler<MessageType::kMessageUdpSenderRead>(int src,
+	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageUdpSenderRead>, int src,
 		void* sender, std::string address, uint16_t port, const char* data,
 		std::size_t size)
 	{
@@ -178,14 +176,14 @@ namespace tengine
 
 	// rpc
 	template<>
-	inline void SandBox::handler<MessageType::kMessageServiceRequest>(
+	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageServiceRequest>,
 		int src, int session, const char* data, std::size_t size)
 	{
 		dispatch((int)MessageType::kMessageServiceRequest, src, session, data, size);
 	}
 
 	template<>
-	inline void SandBox::handler<MessageType::kMessageServiceResponse>(
+	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageServiceResponse>,
 		int src, int session, const char* data, std::size_t size)
 	{
 		dispatch((int)MessageType::kMessageServiceResponse, src, session, data, size);

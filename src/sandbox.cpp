@@ -181,14 +181,14 @@ namespace tengine
 
 		char load_path[512];
 
-		sprintf(load_path, "package.path=package.path..';%s/?.lua;%s/?.luac'.. ';?/init.lua;?/init.luac' .. ';%s/%s/?.lua;%s/%s/?.luac'\0",
+		sprintf(load_path, "package.path=package.path..';%s/?.lua;%s/?.luac'.. ';?/init.lua;?/init.luac' .. ';%s/%s/?.lua;%s/%s/?.luac'",
 			path, path, path, name, path, name);
 
 		if (luaL_dostring(L, load_path) != 0)
 			return -1;
 
 		const char* c_path = context_.config("c_path", "");
-		sprintf(load_path, "package.cpath=package.cpath..';%s/'\0", c_path);	
+		sprintf(load_path, "package.cpath=package.cpath..';%s/'", c_path);	
 
 		if (luaL_dostring(L, load_path) != 0)
 			return -1;

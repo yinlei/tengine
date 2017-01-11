@@ -28,7 +28,7 @@ namespace tengine
 		void log(int level, const std::string &msg, ServiceAddress sender);
 
 		template<int MessageType, class... Args>
-		void handler(int src, Args... args);
+		void handler(MessageTypeTrait<MessageType>, int src, Args... args);
 
 	private:
 		int async_log(ServiceAddress src, const char *msg);
@@ -52,7 +52,7 @@ namespace tengine
 	};
 
 	template<>
-	inline void Logger::handler<MessageType::kMessageLogger>(
+	inline void Logger::handler(MessageTypeTrait<MessageType::kMessageLogger>,
 		int src, const char *msg)
 	{
 		Service* service = context_.query(src);
@@ -63,7 +63,7 @@ namespace tengine
 	}
 
 	template<>
-	inline void Logger::handler<MessageType::kMessageLogger>(
+	inline void Logger::handler(MessageTypeTrait<MessageType::kMessageLogger>,
 		int src, const std::string msg)
 	{
 		Service* service = context_.query(src);
@@ -74,7 +74,7 @@ namespace tengine
 	}
 
 	template<>
-	inline void Logger::handler<MessageType::kMessageLogger>(
+	inline void Logger::handler(MessageTypeTrait<MessageType::kMessageLogger>,
 		int src, int level, const char *msg, int size)
 	{
 		Service* service = context_.query(src);
