@@ -16,7 +16,7 @@ namespace tengine
 			return;
 
 		asio::post(sto->executor(),
-			[&, args...]
+			[=]
 		{
 			//sto->handler(from, std::forward<Args>(args)...);
 			sto->handler(from, args...);
@@ -48,7 +48,7 @@ namespace tengine
 		int from = sfrom->id();
 
 		asio::post(sto->executor(),
-			[&, args...]
+			[=]
 		{
 			T* self = reinterpret_cast<T*>(sto);
 

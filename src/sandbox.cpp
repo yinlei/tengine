@@ -145,8 +145,6 @@ namespace tengine
 
 		luaL_openlibs(L);
 
-		luaopen_lpeg(L);
-
 #ifdef LUA_JIT
 		luaL_requiref(L, "compat53.string", luaopen_string, 0);
 		luaL_requiref(L, "compat53.table", luaopen_table, 0);
@@ -163,6 +161,9 @@ namespace tengine
 		lua_setglobal(L, "__Service__");
 
 		luaL_requiref(L, "tengine.c", luaopen_tengine, 0);
+		lua_pop(L, 1);
+
+		luaL_requiref(L, "lpeg", luaopen_lpeg, 0);
 		lua_pop(L, 1);
 
 		luaL_requiref(L, "cmsgpack", luaopen_cmsgpack, 0);

@@ -134,7 +134,6 @@ project "tengine"
 		includedirs {"/usr/include/mysql/"}
 	elseif os.get() == "windows" then
 		includedirs {"./deps/mysql"}
-        --includedirs {"./deps/mysql-connector-c++-noinstall-1.1.7-win32/include"}
 
         if _OPTIONS["malloc"] == "jemalloc" then
             includedirs {
@@ -191,10 +190,11 @@ project "tengine"
 		links {"lua51"}
 	end
 
+	libdirs {"./deps/mysql"}
+
 	if os.get() == "linux" then
-		links {"mysqlclient", "pthread", "stdc++fs"}
+		links {"./deps/mysql/mysqlclient_fix", "pthread", "stdc++fs", "dl"}
 	elseif os.get() == "windows" then
-		libdirs {"./deps/mysql",}
 		links {"libmySQL"}
 
         if _OPTIONS["malloc"] == "jemalloc" then
