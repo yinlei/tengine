@@ -62,10 +62,15 @@ if _OPTIONS["lua"] == "lua53" then
 		if os.is("windows") then
 			kind "SharedLib"
 			defines {
+				"LUA_USE_WIN",
 				"LUA_BUILD_AS_DLL",
 			}
 		else
 			kind "StaticLib"
+
+			defines {
+				"LUA_USE_LINUX"
+			}
 		end
 		
 		language "C"
