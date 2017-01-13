@@ -75,6 +75,7 @@ if _OPTIONS["lua"] == "lua53" then
 		
 		language "C"
 		targetdir "./bin"
+		buildoptions { "-fPIC" }
 		includedirs {
 			"./deps/lua/src",
 		}
