@@ -271,20 +271,32 @@ namespace tengine
 
 		return "unknown";
 		*/
-		asio::ip::tcp::resolver resolver(host_->context().io_service());
-		asio::ip::tcp::resolver::query query(asio::ip::tcp::v4(), asio::ip::host_name(), "");
-		asio::ip::tcp::resolver::iterator iter = resolver.resolve(query);
-
-		/*
-		asio::ip::tcp::resolver::iterator end;
-		while (iter != end)
+		try
 		{
-			asio::ip::tcp::endpoint ep = *iter++;
-		}
-		*/
-		asio::ip::tcp::endpoint ep = *++iter;
+			asio::ip::tcp::resolver resolver(host_->context().io_service());
+			//asio::ip::tcp::resolver::query query(asio::ip::tcp::v4(),
+			//	asio::ip::host_name(), asio::ip::resolver_query_base::flags());
 
-		return ep.address().to_v4().to_string();
+			asio::ip::tcp::resolver::query query(asio::ip::tcp::v4(),
+				asio::ip::host_name(), "");
+
+			asio::ip::tcp::resolver::iterator iter = resolver.resolve(query);
+
+			/*
+			asio::ip::tcp::resolver::iterator end;
+			while (iter != end)
+			{
+			asio::ip::tcp::endpoint ep = *iter++;
+			}
+			*/
+			asio::ip::tcp::endpoint ep = *++iter;
+
+			return ep.address().to_v4().to_string();
+		}
+		catch (const std::system_error&)
+		{
+			return "unknown";
+		}
 	}
 
 	std::string TcpServer::address(int index)
