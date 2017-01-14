@@ -59,33 +59,37 @@ workspace "ALL"
 
 if _OPTIONS["lua"] == "lua53" then
 	project "lua"
+		language "C"
+		targetdir "./bin"
+
 		if os.is("windows") then
 			kind "SharedLib"
+			
 			defines {
 				"LUA_USE_WIN",
 				"LUA_BUILD_AS_DLL",
 			}
 		else
 			kind "StaticLib"
-
+			buildoptions { "-fPIC" }
 			defines {
 				"LUA_USE_LINUX"
 			}
 		end
 		
-		language "C"
-		targetdir "./bin"
-		buildoptions { "-fPIC" }
 		includedirs {
 			"./deps/lua/src",
 		}
+		
 		files {
 			"./deps/lua/src/*.c",
 		}
+		
 		removefiles {
 			"./deps/lua/src/luac.c",
 			"./deps/lua/src/lua.c",
 		}
+
 end
 
 project "hiredis"
@@ -128,11 +132,11 @@ project "tengine"
 
 	if os.get() == "linux" then
 		buildoptions { "-std=c++11 -std=c++1y -fpermissive" }
+		linkoptions {"-Wl,-E"}
 	end
 
 	includedirs {
 		"./deps",
-		"./deps/flatbuffers/include",
 		"./deps/asio-1.11.0/",
 	}
 
@@ -180,7 +184,7 @@ project "tengine"
 
 	if _OPTIONS["lua"] == "lua53" then
 		includedirs {"./deps/lua/src"}
-		links{"lua"}
+		links{"./bin/lua"}
 	elseif _OPTIONS["lua"] == "luajit" then
 		defines {"LUA_JIT"}
 
