@@ -92,6 +92,97 @@ if _OPTIONS["lua"] == "lua53" then
 
 end
 
+project "lpeg"
+	kind "SharedLib"
+	language "c"
+	targetdir "./bin/"
+	targetprefix ""
+	
+	files {
+		"./deps/lpeg-1.0.0/*c",
+	}
+
+	includedirs {"./deps/lua/src"}
+
+	if os.is("windows") then
+		defines {
+			"LUA_BUILD_AS_DLL",
+			"LUA_LIB"
+		}
+		links{"lua"}
+	else
+		linkoptions {"-fPIC --shared"}
+    end
+
+project "cmsgpack"
+	kind "SharedLib"
+	language "c"
+	targetdir "./bin/"
+	targetprefix ""
+	
+	files {
+		"./deps/lua-cmsgpack/*.c",
+	}
+
+	includedirs {"./deps/lua/src"}
+
+	if os.is("windows") then
+		defines {
+			"LUA_BUILD_AS_DLL",
+			"LUA_LIB"
+		}
+		links{"lua"}
+	else
+		linkoptions {"-fPIC --shared"}
+    end
+
+project "cjson"
+	kind "SharedLib"
+	language "c"
+	targetdir "./bin/"
+	targetprefix ""
+	
+	files {
+		"./deps/lua-cjson/lua_cjson.h",
+		"./deps/lua-cjson/lua_cjson.c",
+		"./deps/lua-cjson/fpconv.c",
+		"./deps/lua-cjson/strbuf.c",
+	}
+
+	includedirs {"./deps/lua/src"}
+
+	if os.is("windows") then
+		defines {
+			"LUA_BUILD_AS_DLL",
+			"LUA_LIB"
+		}
+		links{"lua"}
+	else
+		linkoptions {"-fPIC --shared"}
+    end
+
+project "snapshot"
+	kind "SharedLib"
+	language "c"
+	targetdir "./bin/"
+	targetprefix ""
+	
+	files {
+		"./deps/lua-snapshot/*.c",
+	}
+
+	includedirs {"./deps/lua/src"}
+
+	if os.is("windows") then
+		defines {
+			"LUA_BUILD_AS_DLL",
+			"LUA_LIB"
+		}
+		links{"lua"}
+	else
+		linkoptions {"-fPIC --shared"}
+    end
+
 project "hiredis"
 	kind "StaticLib"
 	language "C++"
@@ -152,26 +243,12 @@ project "tengine"
             }
         end
 	end
-	-- lua src
+
 	files {
 		"./src/*.cpp",
 		"./src/*.hpp",
 		"./src/*.h",
         "./src/*.c",
-	}
-
-	files {
-		"./deps/lpeg-1.0.0/*c",
-		"./deps/lua-snapshot/*.c",
-		"./deps/lua-cmsgpack/*.c",
-	}
-
-	-- lua-cjson
-	files {
-		"./deps/lua-cjson/lua_cjson.h",
-		"./deps/lua-cjson/lua_cjson.c",
-		"./deps/lua-cjson/fpconv.c",
-		"./deps/lua-cjson/strbuf.c",
 	}
 
 	removefiles {
@@ -184,7 +261,7 @@ project "tengine"
 
 	if _OPTIONS["lua"] == "lua53" then
 		includedirs {"./deps/lua/src"}
-		links{"./bin/lua"}
+		links{"lua"}
 	elseif _OPTIONS["lua"] == "luajit" then
 		defines {"LUA_JIT"}
 

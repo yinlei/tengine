@@ -418,7 +418,7 @@ static int
         return 1;
 }
 
-int
+LUALIB_API int
     luaopen_snapshot(lua_State *L) {
         luaL_checkversion(L);
         lua_pushcfunction(L, snapshot);

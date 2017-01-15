@@ -10,11 +10,6 @@
 #include "lua.hpp"
 #endif // LUA_JIT
 
-#include "lpeg-1.0.0/lpeg.h"
-#include "lua-cjson/lua_cjson.h"
-#include "lua-snapshot/snapshot.h"
-#include "lua-cmsgpack/lua_cmsgpack.h"
-
 #ifdef LUA_JIT
 #define ltablib_c
 #include "lstrlib.c"
@@ -161,18 +156,6 @@ namespace tengine
 		lua_setglobal(L, "__Service__");
 
 		luaL_requiref(L, "tengine.c", luaopen_tengine, 0);
-		lua_pop(L, 1);
-
-		luaL_requiref(L, "lpeg", luaopen_lpeg, 0);
-		lua_pop(L, 1);
-
-		luaL_requiref(L, "cmsgpack", luaopen_cmsgpack, 0);
-		lua_pop(L, 1);
-
-		luaL_requiref(L, "cjson", luaopen_cjson, 0);
-		lua_pop(L, 1);
-
-		luaL_requiref(L, "snapshot", luaopen_snapshot, 0);
 		lua_pop(L, 1);
 
 		const char* path = context_.config("lua_path", "./scripts");

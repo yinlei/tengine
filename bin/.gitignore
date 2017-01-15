@@ -12,3 +12,9 @@
 *.lai
 *.la
 *.a
+
+cjson.*
+cmsgpack.*
+snapshot.*
+lpeg.*
+lua.*

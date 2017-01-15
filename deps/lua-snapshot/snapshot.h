@@ -6,7 +6,7 @@ extern "C" {
 #include "lua.h"
 #include "lauxlib.h"
 
-extern int luaopen_snapshot(lua_State *L);
+extern LUALIB_API int luaopen_snapshot(lua_State *L);
 
 #ifdef __cplusplus
 }
