@@ -124,7 +124,7 @@ namespace tengine
 
 		void asyncNotifyRead(int session, const char *data, std::size_t size);
 
-		void asyncNotifyClosed(int session, const char *error);
+		void asyncNotifyClosed(int session, const char *error, std::size_t size);
 
 		asio::strand<asio::executor> executor_;
 

@@ -95,7 +95,7 @@ namespace tengine
 					}
 					else
 					{
-						owner_.asyncNotifyClosed(index_, ec.message().c_str());
+						owner_.asyncNotifyClosed(index_, ec.message().c_str(), ec.message().size());
 					}
 				}
 			);
@@ -117,7 +117,7 @@ namespace tengine
 					}
 					else
 					{
-						owner_.asyncNotifyClosed(index_, ec.message().c_str());
+						owner_.asyncNotifyClosed(index_, ec.message().c_str(), ec.message().size());
 					}
 				}
 			);
@@ -141,7 +141,7 @@ namespace tengine
 					}
 					else
 					{
-						owner_.asyncNotifyClosed(index_, ec.message().c_str());
+						owner_.asyncNotifyClosed(index_, ec.message().c_str(), ec.message().size());
 					}
 				}
 			);
@@ -367,15 +367,17 @@ namespace tengine
 		}
 	}
 
-	void TcpServer::asyncNotifyClosed(int session, const char *error)
+	void TcpServer::asyncNotifyClosed(int session, const char *error, std::size_t size)
 	{
 		this->close_session(session);
 
-		const char *tmp = (char*)ccmalloc(strlen(error));
-		if (tmp)
+		char *msg = (char*)ccmalloc(size+1);
+		if (msg)
 		{
+			memcpy(msg, error, size);
+			msg[size] = '\0';
 			dispatch<MessageType::kMessageTcpServerClosed, SandBox>(
-				host(), host(), (void*)this, session, tmp);
+				host(), host(), (void*)this, session, (const char*)msg);
 		}
 	}
 
