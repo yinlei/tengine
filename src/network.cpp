@@ -798,7 +798,10 @@ namespace tengine
 				const char* result = handler("GET", path.c_str(), content.c_str());
 
 				if (result)
-					*response << "HTTP/1.1 200 OK\r\nContent-Length: " << strlen(result) << "\r\n\r\n" << result;
+					*response << "HTTP/1.1 200 OK\r\n"
+							  << "Content-Type: application/json\r\n"
+							  << "Content-Length: " << strlen(result) << "\r\n\r\n" 
+							  << result;
 				else
 					//TODO
 					*response << "HTTP/1.1 200 OK\r\nContent-Length: " << 0 << "\r\n\r\n" << "";

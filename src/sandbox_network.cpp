@@ -82,6 +82,8 @@ static int web_start(lua_State* L)
 	my->imp->start(port,
 		[=](const char* type, const char* path, const char* content)
 	{
+		lua_State* L = my->self->state();
+
 		lua_rawgeti(L, LUA_REGISTRYINDEX, callback);
 
 		lua_pushstring(L, type);
@@ -95,7 +97,7 @@ static int web_start(lua_State* L)
 		return lua_tostring(L, -1);
 	});
 
-	return 0;
+	return 1;
 }
 
 static int web_release(lua_State* L)
