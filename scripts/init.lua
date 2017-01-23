@@ -3,9 +3,9 @@
 --------------------------------------------------------------------------------
 local require, package = require, package
 
---if jit then
+if _G.jit then
     require "tengine.compat53"
---end
+end
 
 tengine = tengine or {}
 

@@ -54,12 +54,15 @@ namespace tengine
 
 		void send(const Message& msg)
 		{
+			do_write(msg);
+			/*
 			bool write_in_progress = !write_msgs_.empty();
 			write_msgs_.push_back(msg);
 			if (!write_in_progress)
 			{
 				do_write();
 			}
+			*/
 		}
 
 		const std::string remote_address()
@@ -140,6 +143,21 @@ namespace tengine
 						}
 					}
 					else
+					{
+						owner_.asyncNotifyClosed(index_, ec.message().c_str(), ec.message().size());
+					}
+				}
+			);
+		}
+
+		void do_write(const Message& msg)
+		{
+			auto self(shared_from_this());
+			asio::async_write(socket_,
+				asio::buffer(msg.data(), msg.length()),
+				[this, self](std::error_code ec, std::size_t length)
+				{
+					if (ec)
 					{
 						owner_.asyncNotifyClosed(index_, ec.message().c_str(), ec.message().size());
 					}

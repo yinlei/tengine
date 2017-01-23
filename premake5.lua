@@ -34,7 +34,9 @@ end
 
 workspace "ALL"
 	configurations { "Debug32", "Release32", "Debug64", "Release64"}
+	startproject "tengine"
 	location "build"
+	flags { "Symbols" }
 
 	filter "configurations:*32"
 		architecture "x86"
@@ -45,17 +47,24 @@ workspace "ALL"
 	filter{}
 
 	filter "configurations:Debug*"
-		defines {
-			"DEBUG",
-			"LPEG_DEBUG"
-		}
-		flags { "Symbols" }
+		defines { "DEBUG", "_DEBUG" }
 	filter{}
 
 	filter "configurations:Release*"
      	defines { "NDEBUG" }
       	optimize "On"
     filter{}
+
+	filter { "system:windows" }
+		defines { "_CRT_SECURE_NO_WARNINGS" }
+		buildoptions { '/wd"4503"' }
+	filter{}
+
+--[[
+	configuration "vs*"
+     	defines { "_CRT_SECURE_NO_WARNINGS" }
+    configuration{}
+--]]
 
 if _OPTIONS["lua"] == "lua53" then
 	project "lua"
@@ -101,6 +110,10 @@ project "lpeg"
 	files {
 		"./deps/lpeg-1.0.0/*c",
 	}
+
+	configuration "Debug*"
+        defines { "LPEG_DEBUG" }
+	configuration{}
 
 	includedirs {"./deps/lua/src"}
 
@@ -206,6 +219,7 @@ project "tengine"
 		"ASIO_HAS_STD_TYPE_TRAITS",
         "ASIO_HAS_STD_CHRONO",
 	}
+	flags {"C++11", "C++14"}
 
     if _OPTIONS["malloc"] == "jemalloc" then
         defines {
@@ -222,7 +236,7 @@ project "tengine"
 	end
 
 	if os.get() == "linux" then
-		buildoptions { "-std=c++11 -std=c++1y -fpermissive" }
+		--buildoptions { "-std=c++11 -std=c++1y -fpermissive" }
 		linkoptions {"-Wl,-E"}
 	end
 

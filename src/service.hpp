@@ -141,7 +141,7 @@ namespace tengine
 
 		Context& context_;
 
-		asio::strand<asio::executor> executor_;
+		ServiceExecutor executor_;
 
 		std::vector<MessageHandlerBasePtr> handlers_;
 
