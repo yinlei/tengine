@@ -70,6 +70,7 @@ if _OPTIONS["lua"] == "lua53" then
 	project "lua"
 		language "C"
 		targetdir "./bin"
+		defines { "LUA_USE_APICHECK" }
 
 		if os.is("windows") then
 			kind "SharedLib"

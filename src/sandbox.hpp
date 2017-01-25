@@ -36,7 +36,7 @@ namespace tengine
 
 		lua_State* state();
 
-		int call(int num, bool remove, lua_State* L = nullptr);
+		int call(int num, bool remove = true, lua_State* L = nullptr);
 
 	public:
 

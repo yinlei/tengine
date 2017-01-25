@@ -209,12 +209,12 @@ namespace tengine
 		int func_index = -(num + 1);
 		if (!lua_isfunction(L, func_index))
 		{
-			lua_settop(L, 0);
-			return luaL_error(L, "callback is not function !!!");;
+			lua_pop(L, func_index + 1);
+			return luaL_error(L, "value at stack [%d] is not function !!!", func_index);;
 		}
 
 		int traceback = 0;
-		lua_getglobal(L, "TRACKBACK");
+		lua_getglobal(L, "__G__TRACKBACK__");
 		if (!lua_isfunction(L, -1))
 		{
 			lua_pop(L, 1);
