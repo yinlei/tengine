@@ -163,7 +163,7 @@ static int dispatch(lua_State *L)
 	luaL_checktype(L, 1, LUA_TFUNCTION);
 	lua_settop(L, 1);
 	lua_rawsetp(L, LUA_REGISTRYINDEX, self);
-	return 1;
+	return 0;
 }
 
 static int thread_id(lua_State* L)

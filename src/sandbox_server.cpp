@@ -35,6 +35,7 @@ static int server_send_to_session(lua_State *L)
 	s->imp->send(session, data, len);
 
 	lua_pushinteger(L, len);
+
 	return 1;
 }
 
@@ -116,7 +117,7 @@ static int server_release(lua_State *L)
 		}
 	}
 
-	return 1;
+	return 0;
 }
 
 static int server(lua_State *L)
