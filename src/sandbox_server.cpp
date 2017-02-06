@@ -208,9 +208,11 @@ void SandBox::server_accept(void* sender, int session)
 	{
 		lua_rawgeti(L, LUA_REGISTRYINDEX, s->on_accept_ref);
 		lua_pushinteger(L, session);
-
 		call(1, true);
 	}
+
+	lua_pop(L, 1);
+	lua_pop(L, 1);
 }
 
 void SandBox::server_read(void* sender, int session, const char* data, std::size_t size)
@@ -230,6 +232,8 @@ void SandBox::server_read(void* sender, int session, const char* data, std::size
 		lua_pushinteger(L, size);
 		call(3, true);
 	}
+	lua_pop(L, 1);
+	lua_pop(L, 1);
 
 	ccfree((void*)data);
 }
@@ -250,6 +254,9 @@ void SandBox::server_closed(void* sender, int session, const char* error)
 		lua_pushstring(L, error);
 		call(2, true);
 	}
+
+	lua_pop(L, 1);
+	lua_pop(L, 1);
 
 	ccfree((void*)error);
 }
