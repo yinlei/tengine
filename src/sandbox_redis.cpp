@@ -87,6 +87,9 @@ static int redis_call(lua_State *L)
 	my->imp->call(data, len,
 		[=](redisContext *context, redisReply *reply)
 	{
+		if (connect == nullptr || reply == nullptr)
+			return;
+
 		lua_State* L = my->self->state();
 
 		lua_rawgeti(L, LUA_REGISTRYINDEX, callback);
@@ -128,6 +131,9 @@ static int redis_callv(lua_State *L)
 	my->imp->call(argv, argvlen, nargs,
 		[=](redisContext *context, redisReply *reply)
 	{
+		if (reply == nullptr || context == nullptr)
+			return;
+
 		lua_State* L = my->self->state();
 
 		lua_rawgeti(L, LUA_REGISTRYINDEX, callback);
@@ -182,9 +188,7 @@ static int redis_commit(lua_State *L)
 
 	struct redis *my = (struct redis*)lua_touserdata(L, 1);
 	if (!my || !my->imp)
-        {
-            return luaL_error(L, "please new redis first ...");
-        }
+        return luaL_error(L, "please new redis first ...");
 
 	luaL_checktype(L, 2, LUA_TFUNCTION);
 	lua_pushvalue(L, 2);

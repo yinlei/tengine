@@ -11,7 +11,7 @@ static int log(lua_State* L)
 	SandBox *self = (SandBox*)lua_touserdata(L, lua_upvalueindex(2));
 
 	Logger *logger = (Logger*)context->query("Logger");
-	if (logger == NULL)
+	if (logger == nullptr)
 		return luaL_error(L, "no logger service");
 
 	int level = (int)luaL_checknumber(L, 1);
