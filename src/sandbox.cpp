@@ -87,8 +87,15 @@ int luaopen_tengine(lua_State *L)
 namespace tengine
 {
 	SandBox::SandBox(Context& context)
+		: SandBox(context, "")
+	{
+
+	}
+
+	SandBox::SandBox(Context& context, const char *args)
 		: Service(context)
 		, l_(nullptr)
+		, args_(args)
 		, timer_(nullptr)
 		, logger_(nullptr)
 		, channels()
@@ -128,13 +135,14 @@ namespace tengine
 		asio::post(executor(),
 			[=]
 			{
-				this->inject(name);
+				const std::string& args = this->args_;
+				this->inject(name, args.c_str(), args.size());
 			});
 
 		return 0;
 	}
 
-	int SandBox::inject(const char *name)
+	int SandBox::inject(const char *name, const char* args, std::size_t sz)
 	{
 		lua_State * L = l_;
 
@@ -178,25 +186,59 @@ namespace tengine
 			return -1;
 
 		static const char * scripts = "\
-		coroutine.wrap(function()\
-			local success, failure = xpcall(function() require 'main' end, debug.traceback)\
-			if not success then\
-				print(failure)\
-			end\
-		end)()\
-		";
+			local tmp = {...}\n \
+			local name = tmp[1]\n \
+			local args = {}\n \
+			for word in string.gmatch(tmp[2], '%S+') do\n \
+				table.insert(args, word)\n \
+			end\n \
+			local errs = {}\n \
+			local main, pattern\n \
+			for p in string.gmatch(string.format('./%s/?.lua', name), '([^;]+);*') do\n \
+				local filename = string.gsub(p, '?', 'main')\n \
+				local f, msg = loadfile(filename)\n \
+				if not f then\n \
+					table.insert(errs, msg)\n \
+				else\n \
+					pattern = p\n \
+					main = f\n \
+					break\n \
+				end\n \
+			end\n \
+			if not main then\n \
+				error(table.concat(errs, ' '))\n \
+			end\n \
+			main(table.unpack(args))\n \
+			";	
 
-		int ret = luaL_dostring(L, "require 'main'");
+		int ret = luaL_loadstring(L, scripts);
 		if (ret != LUA_OK)
 		{
 			Logger *logger = (Logger*)context_.query("Logger");
-			if (logger != NULL)
+			if (logger != nullptr)
 			{
 				logger->log(lua_tostring(L, -1), this);
 			}
 
 			return -1;
 		}
+		lua_pushstring(L, name);
+
+		lua_pushlstring(L, args, sz);
+
+		ret = lua_pcall(L, 2, 0, 0);
+		if (ret != LUA_OK)
+		{
+			Logger *logger = (Logger*)context_.query("Logger");
+			if (logger != nullptr)
+			{
+				logger->log(lua_tostring(L, -1), this);
+			}
+
+			return -1;
+		}
+		
+		lua_settop(L,0);
 
 		return 0;
 	}

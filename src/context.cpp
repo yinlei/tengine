@@ -214,16 +214,16 @@ namespace tengine
 			net_executor_->stop();
 	}
 
-	SandBox *Context::LaunchSandBox(const char *name)
+	SandBox *Context::LaunchSandBox(const char *name, const char *args)
 	{
-		SandBox *sand_box = new SandBox(*this);
+		SandBox *sand_box = new SandBox(*this, args);
 		if (sand_box == nullptr)
-			return (SandBox *)NULL;
+			return nullptr;
 
 		if (sand_box->init(name) != 0)
 		{
 			delete sand_box;
-			return (SandBox *)NULL;
+			return nullptr;
 		}
 
 		this->register_name(sand_box, name);

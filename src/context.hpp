@@ -41,7 +41,7 @@ namespace tengine
 
 		void stop();
 
-		SandBox *LaunchSandBox(const char *name);
+		SandBox *LaunchSandBox(const char *name, const char* args);
 
 		int register_service(Service *service);
 

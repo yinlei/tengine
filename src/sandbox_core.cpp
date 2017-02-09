@@ -19,13 +19,18 @@ static int start(lua_State *L)
 {
 	Context *context = (Context*)lua_touserdata(L, lua_upvalueindex(1));
 	const char *name = lua_tostring(L, 1);
+	const char* args = NULL;
+
+	if (lua_gettop(L) == 2) {
+		args = luaL_checkstring(L, 2);
+	}
 
 	SandBox *self = (SandBox*)lua_touserdata(L, lua_upvalueindex(2));
 
 	if (name == NULL)
 		return luaL_error(L, "service name ...");
 
-	SandBox *sandbox = context->LaunchSandBox(name);
+	SandBox *sandbox = context->LaunchSandBox(name, args);
 	if (sandbox == NULL)
 		return luaL_error(L, "service init failed!");
 

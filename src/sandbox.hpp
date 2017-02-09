@@ -30,6 +30,8 @@ namespace tengine
 
 		SandBox(Context& context);
 
+		SandBox(Context& context, const char *args);
+
 		virtual ~SandBox();
 
 		virtual int init(const char* name);
@@ -49,7 +51,7 @@ namespace tengine
 
 	private:
 
-		int inject(const char *name);
+		int inject(const char *name, const char* args, std::size_t sz);
 
 		void timer(void* timer_id, int session);
 
@@ -78,6 +80,8 @@ namespace tengine
 		void dispatch(int type, int src, int session, const char* data, std::size_t size);
 
 		lua_State* l_;
+
+		std::string args_;
 
 		Service *timer_;
 
