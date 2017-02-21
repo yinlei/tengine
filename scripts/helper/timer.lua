@@ -1,10 +1,12 @@
 --------------------------------------------------------------------------------
 --- timer.lua
 --------------------------------------------------------------------------------
+local _PACKAGE = (...):match("^(.+)[%./][^%./]+") or ""
+
 local c = tengine.c
 local now = c.now
 local timer = tengine.timer
-local priority_queue = tengine.helper.priority_queue
+local priority_queue = require (_PACKAGE.."/priority_queue")
 
 local function _compare(t1, t2)
     return t1.timeout < t2.timeout
@@ -74,7 +76,9 @@ local add = function(self, start, interval, count, f, ...)
 end
 
 local del = function(self, id)
-    self.deleted[id] = 1
+    if not id then
+        self.deleted[id] = 1
+    end
 end
 
 local min = function(self)
