@@ -307,7 +307,11 @@ namespace tengine
 			asio::ip::tcp::endpoint ep = *iter++;
 			}
 			*/
-			asio::ip::tcp::endpoint ep = *++iter;
+
+			asio::ip::tcp::endpoint ep;
+			asio::ip::tcp::resolver::iterator end;
+			if (iter != end)
+				ep = *iter++;
 
 			return ep.address().to_v4().to_string();
 		}

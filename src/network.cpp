@@ -646,8 +646,8 @@ namespace
 					return false;
 			}
 			else
-				return false;
-			return true;
+return false;
+return true;
 		}
 
 		void find_resource(std::shared_ptr<socket_type> socket, std::shared_ptr<Request> request) {
@@ -675,14 +675,14 @@ namespace
 				std::shared_ptr<typename ServerBase<socket_type>::Request>)>& resource_function) {
 			//Set timeout on the following asio::async-read or write function
 			std::shared_ptr<asio::steady_timer> timer;
-			if (timeout_content>0)
+			if (timeout_content > 0)
 				timer = set_timeout_on_socket(socket, timeout_content);
 
 			auto response = std::shared_ptr<Response>(new Response(socket), [this, request, timer](Response *response_ptr) {
 				auto response = std::shared_ptr<Response>(response_ptr);
 				send(response, [this, response, request, timer](const asio::error_code& ec) {
 					if (!ec) {
-						if (timeout_content>0)
+						if (timeout_content > 0)
 							timer->cancel();
 						float http_version;
 						try {
@@ -693,11 +693,11 @@ namespace
 						}
 
 						auto range = request->header.equal_range("Connection");
-						for (auto it = range.first;it != range.second;it++) {
+						for (auto it = range.first; it != range.second; it++) {
 							if (it->second == "close")
 								return;
 						}
-						if (http_version>1.05)
+						if (http_version > 1.05)
 							read_request_and_content(response->socket);
 					}
 				});
