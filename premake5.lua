@@ -250,6 +250,7 @@ project "tengine"
 		includedirs {"/usr/include/mysql/"}
 	elseif os.get() == "windows" then
 		includedirs {"./deps/mysql"}
+		includedirs {"./deps/openssl"}
 
         if _OPTIONS["malloc"] == "jemalloc" then
             includedirs {
@@ -304,6 +305,7 @@ project "tengine"
             links {"libjemalloc_x86_Debug"}
         end
 
+		links {"./deps/openssl/libcrypto"}
     end
 
 if _ACTION == "clean" then

@@ -41,6 +41,11 @@ namespace tengine
 		kMessageServiceRequest,
 		kMessageServiceResponse,
 
+		kMessageWebServerOpen,
+		kMessageWebServerMessage,
+		kMessageWebServerClose,
+		kMessageWebServerError,
+
 		kMessageInternal,
 
 		kMessageCount,

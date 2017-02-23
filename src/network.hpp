@@ -3,8 +3,10 @@
 
 #include "service.hpp"
 #include "service_proxy.hpp"
+#include "spin_lock.hpp"
 
 #include <thread>
+#include <map>
 
 namespace tengine
 {
@@ -64,14 +66,13 @@ namespace tengine
 	public:
 		static constexpr int WEBSOCKET_KEY = 0;
 
-		WebSocket(Service *s);
+		WebSocket(Service *s, uint16_t port);
 
 		~WebSocket();
 
-		typedef std::function<const char*(const char*,
-			const char*, const char*)> Handler;
+		int start(const std::string& path);
 
-		int start(uint16_t port, Handler handler);
+		void send(int session, const char *data, size_t len);
 
 	private:
 		uint16_t port_;
@@ -79,6 +80,10 @@ namespace tengine
 		void *server_;
 
 		std::thread *worker_;
+
+		SpinLock session_lock_;
+
+		std::map<void*, void*> connections_;
 	};
 
 }

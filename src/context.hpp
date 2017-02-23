@@ -1,5 +1,5 @@
-#ifndef TENGINE_CONTEXT_H
-#define TENGINE_CONTEXT_H
+#ifndef TENGINE_CONTEXT_HPP
+#define TENGINE_CONTEXT_HPP
 
 #include "spin_lock.hpp"
 
@@ -123,6 +123,5 @@ namespace tengine
 	}
 
 }
-
 
 #endif

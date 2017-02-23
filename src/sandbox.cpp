@@ -50,6 +50,7 @@ int luaopen_tengine(lua_State *L)
 
 		{ "http", http },
 		{ "web", web},
+		{ "webserver", webserver },
 		{ "server", server },
 		{ "udp_server", udp_server },
 		{ "channel", channel },

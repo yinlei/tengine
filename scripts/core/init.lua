@@ -35,6 +35,7 @@ return {
     channel = require(_PACKAGE.."/channel"),
     http = require(_PACKAGE.."/http"),
     web = require(_PACKAGE.."/web"),
+    webserver = require(_PACKAGE.."/webserver"),
     mysql = require(_PACKAGE.."/mysql"),
     redis = require(_PACKAGE.."/redis"),
     timer = require(_PACKAGE.."/timer"),

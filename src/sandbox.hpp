@@ -79,6 +79,14 @@ namespace tengine
 
 		void dispatch(int type, int src, int session, const char* data, std::size_t size);
 
+		void webserver_open(void* sender, int session);
+
+		void webserver_message(void* sender, int session, const char* data, std::size_t size);
+
+		void webserver_close(void* sender, int session, int status, const char* reason);
+
+		void webserver_error(void* sender, int session, const char* error);
+
 		lua_State* l_;
 
 		std::string args_;
@@ -191,6 +199,35 @@ namespace tengine
 		int src, int session, const char* data, std::size_t size)
 	{
 		dispatch((int)MessageType::kMessageServiceResponse, src, session, data, size);
+	}
+
+	// webserver
+	template<>
+	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageWebServerOpen>, int src,
+		void* sender, int session)
+	{
+		webserver_open(sender, session);
+	}
+
+	template<>
+	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageWebServerMessage>, int src,
+		void* sender, int session, const char* data, std::size_t size)
+	{
+		webserver_message(sender, session, data, size);
+	}
+
+	template<>
+	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageWebServerClose>, int src,
+		void* sender, int session, int status, const char* reason)
+	{
+		webserver_close(sender, session, status, reason);
+	}
+
+	template<>
+	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageWebServerError>, int src,
+		void* sender, int session, const char* error)
+	{
+		webserver_error(sender, session, error);
 	}
 
 }
