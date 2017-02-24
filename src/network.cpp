@@ -1585,24 +1585,27 @@ namespace tengine
 
 		s.on_message=[this](std::shared_ptr<WebSocketServer::Connection> connection, 
 			std::shared_ptr<WebSocketServer::Message> message) {
-
 			auto& message_str = message->string();
+
+			std::size_t size = message_str.size();
+			char *msg = (char*)ccmalloc(size);
+			memcpy(msg, message_str.c_str(), size);
+
 			dispatch<MessageType::kMessageWebServerMessage, SandBox>(
-				this->host(), this->host(), (void*)this, (int)connection.get(), 
-				message_str.c_str(), message_str.size());
+				this->host(), this->host(), (void*)this, (int)connection.get(), (const char*)msg, size);
 		};
 
 		s.on_close=[this](std::shared_ptr<WebSocketServer::Connection> connection, int status, const std::string& reason) {
 			std::cout << "Server: Closed connection " << (size_t)connection.get() << " with status code " << status << std::endl;
 			dispatch<MessageType::kMessageWebServerClose, SandBox>(
-				this->host(), this->host(), (void*)this, (int)connection.get(), status, reason.c_str());
+				this->host(), this->host(), (void*)this, (int)connection.get(), status, reason);
     	};
 
 		s.on_error=[this](std::shared_ptr<WebSocketServer::Connection> connection, const asio::error_code& ec) {
 			std::cout << "Server: Error in connection " << (size_t)connection.get() << ". " <<
 				"Error: " << ec << ", error message: " << ec.message() << std::endl;
 			dispatch<MessageType::kMessageWebServerError, SandBox>(
-				this->host(), this->host(), (void*)this, (int)connection.get(), ec.message().c_str());
+				this->host(), this->host(), (void*)this, (int)connection.get(), ec.message());
 		};
 
 		worker_ = new std::thread([&server]
@@ -1615,6 +1618,20 @@ namespace tengine
 
 	void WebSocket::send(int session, const char *data, size_t len)
 	{
-		SpinHolder holder(session_lock_);
+		if (server_ == nullptr)
+			return;
+		
+		WebSocketServer *server = static_cast<WebSocketServer*>(server_);
+		for (auto& con : server->get_connections())
+		{
+			if ((std::size_t)con.get() == session)
+			{
+				auto send_stream = std::make_shared<WebSocketServer::SendStream>();
+       		 	*send_stream << data;
+				server->send(con, send_stream);
+				return;
+			}
+		}
+
 	}
 }

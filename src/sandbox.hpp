@@ -83,9 +83,9 @@ namespace tengine
 
 		void webserver_message(void* sender, int session, const char* data, std::size_t size);
 
-		void webserver_close(void* sender, int session, int status, const char* reason);
+		void webserver_close(void* sender, int session, int status, const std::string& reason);
 
-		void webserver_error(void* sender, int session, const char* error);
+		void webserver_error(void* sender, int session, const std::string& error);
 
 		lua_State* l_;
 
@@ -218,14 +218,14 @@ namespace tengine
 
 	template<>
 	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageWebServerClose>, int src,
-		void* sender, int session, int status, const char* reason)
+		void* sender, int session, int status, std::string reason)
 	{
 		webserver_close(sender, session, status, reason);
 	}
 
 	template<>
 	inline void SandBox::handler(MessageTypeTrait<MessageType::kMessageWebServerError>, int src,
-		void* sender, int session, const char* error)
+		void* sender, int session, std::string error)
 	{
 		webserver_error(sender, session, error);
 	}

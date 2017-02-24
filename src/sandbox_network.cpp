@@ -228,15 +228,26 @@ static int webserver_start(lua_State* L)
 	return 1;
 }
 
-static int webserver_send(lua_State* L)
+static int webserver_send(lua_State *L)
 {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 
-	struct webserver *my = (struct webserver*)lua_touserdata(L, 1);
+	struct webserver *my = (struct webserver *)lua_touserdata(L, 1);
 	if (!my)
-	{
 		return luaL_error(L, "type is not webserver!!!");
-	}
+
+	if (!my->imp)
+		return luaL_error(L, "type is not webserver!!!");
+
+	int session = (int)luaL_checkinteger(L, 2);
+
+	size_t len;
+
+	const char * data = luaL_checklstring(L, 3, &len);
+
+	my->imp->send(session, data, len);
+
+	lua_pushinteger(L, len);
 
 	return 1;
 }
@@ -302,6 +313,7 @@ static int webserver(lua_State* L)
 	if (luaL_newmetatable(L, "webserver")) {
 		luaL_Reg l[] = {
 			{ "start", webserver_start },
+			{ "send", webserver_send },
 			{ "__gc", webserver_release },
 			{ NULL, NULL },
 		};
@@ -378,7 +390,7 @@ void SandBox::webserver_message(void* sender, int session, const char* data, std
 	ccfree((void*)data);
 }
 
-void SandBox::webserver_close(void* sender, int session, int status, const char* reason)
+void SandBox::webserver_close(void* sender, int session, int status, const std::string& reason)
 {
 	lua_State *L = l_;
 	//lua_rawgetp(L, LUA_REGISTRYINDEX, message->sender);
@@ -392,18 +404,16 @@ void SandBox::webserver_close(void* sender, int session, int status, const char*
 		lua_rawgeti(L, LUA_REGISTRYINDEX, s->on_close_ref);
 		lua_pushinteger(L, session);
 		lua_pushinteger(L, status);
-		lua_pushstring(L, reason);
+		lua_pushlstring(L, reason.c_str(), reason.size());
 		call(3, true);
 	}
 
 	lua_pop(L, 1);
 	lua_pop(L, 1);
-
-	ccfree((void*)reason);
 }
 
 
-void SandBox::webserver_error(void* sender, int session, const char* error)
+void SandBox::webserver_error(void* sender, int session, const std::string& error)
 {
 	lua_State *L = l_;
 	//lua_rawgetp(L, LUA_REGISTRYINDEX, message->sender);
@@ -416,12 +426,10 @@ void SandBox::webserver_error(void* sender, int session, const char* error)
 	{
 		lua_rawgeti(L, LUA_REGISTRYINDEX, s->on_error_ref);
 		lua_pushinteger(L, session);
-		lua_pushstring(L, error);
+		lua_pushlstring(L, error.c_str(), error.size());
 		call(2, true);
 	}
 
 	lua_pop(L, 1);
 	lua_pop(L, 1);
-
-	ccfree((void*)error);
 }
