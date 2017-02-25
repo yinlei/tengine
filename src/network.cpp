@@ -802,12 +802,12 @@ namespace tengine
 				if (result)
 					*response << "HTTP/1.1 200 OK\r\n"
 					<< "Content-Type: application/json\r\n"
+					<< "Access-Control-Allow-Origin: *\r\n"
 					<< "Content-Length: " << strlen(result) << "\r\n\r\n"
 					<< result;
 				else
 					//TODO
 					*response << "HTTP/1.1 200 OK\r\nContent-Length: " << 0 << "\r\n\r\n" << "";
-				;
 			});
 
 		};
@@ -821,11 +821,17 @@ namespace tengine
 			asio::post(this->host()->executor(),
 				[=]
 			{
-				const char* r = handler("POST", path.c_str(), content.c_str());
-				if (r)
-					*response << "HTTP/1.1 200 OK\r\nContent-Length: " << ::strlen(r) << "\r\n\r\n" << r;
+				const char* result = handler("POST", path.c_str(), content.c_str());
 
-				*response << "HTTP/1.1 200 OK\r\nContent-Length: " << 0 << "\r\n\r\n" << "";
+				if (result)
+					*response << "HTTP/1.1 200 OK\r\n"
+					<< "Content-Type: application/json\r\n"
+					<< "Access-Control-Allow-Origin: *\r\n"
+					<< "Content-Length: " << strlen(result) << "\r\n\r\n"
+					<< result;
+				else
+					//TODO
+					*response << "HTTP/1.1 200 OK\r\nContent-Length: " << 0 << "\r\n\r\n" << "";
 			});
 
 		};
