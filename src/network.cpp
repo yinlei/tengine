@@ -797,6 +797,12 @@ namespace tengine
 			asio::post(this->host()->executor(),
 				[=]
 			{
+				auto res = response;
+				auto req = request;
+
+				handler(res.get(), "GET", path.c_str(), content.c_str());
+
+				/*
 				const char* result = handler("GET", path.c_str(), content.c_str());
 
 				if (result)
@@ -808,6 +814,7 @@ namespace tengine
 				else
 					//TODO
 					*response << "HTTP/1.1 200 OK\r\nContent-Length: " << 0 << "\r\n\r\n" << "";
+				*/
 			});
 
 		};
@@ -821,6 +828,11 @@ namespace tengine
 			asio::post(this->host()->executor(),
 				[=]
 			{
+				auto res = response;
+				auto req = request;
+				
+				handler(res.get(), "POST",  path.c_str(), content.c_str());
+				/*
 				const char* result = handler("POST", path.c_str(), content.c_str());
 
 				if (result)
@@ -832,6 +844,7 @@ namespace tengine
 				else
 					//TODO
 					*response << "HTTP/1.1 200 OK\r\nContent-Length: " << 0 << "\r\n\r\n" << "";
+				*/
 			});
 
 		};
@@ -842,6 +855,27 @@ namespace tengine
 		});
 
 		return 0;
+	}
+
+	void WebServer::response(void* response, const char* result, std::size_t size)
+	{
+		/*
+		HttpServer::Response *res = static_cast<HttpServer::Response*>(response);
+		if (res)
+			*res << "HTTP/1.1 200 OK\r\n"
+			<< "Content-Type: application/json\r\n"
+			<< "Access-Control-Allow-Origin: *\r\n"
+			<< "Content-Length: " << size << "\r\n\r\n"
+			<< result;
+		else
+			//TODO
+			*res << "HTTP/1.1 200 OK\r\nContent-Length: " << 0 << "\r\n\r\n" << "";
+		*/
+		if (response && result)
+		{
+			HttpServer::Response *res = static_cast<HttpServer::Response*>(response);
+			*res << std::string{ result, size };
+		}
 	}
 }
 

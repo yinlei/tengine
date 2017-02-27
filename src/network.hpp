@@ -48,10 +48,12 @@ namespace tengine
 
 		~WebServer();
 
-		typedef std::function<const char*(const char*,
+		typedef std::function<int (void*, const char*,
 			const char*, const char*)> Handler;
 
 		int start(uint16_t port, Handler handler);
+
+		void response(void* response, const char* res, std::size_t size);
 
 	private:
 		uint16_t port_;

@@ -80,11 +80,13 @@ static int web_start(lua_State* L)
 	my->callback = callback;
 
 	my->imp->start(port,
-		[=](const char* type, const char* path, const char* content)
+		[=](void *res, const char* type, const char* path, const char* content)
 	{
 		lua_State* L = my->self->state();
 
 		lua_rawgeti(L, LUA_REGISTRYINDEX, callback);
+
+		lua_pushlightuserdata(L, res);
 
 		lua_pushstring(L, type);
 
@@ -92,12 +94,30 @@ static int web_start(lua_State* L)
 
 		lua_pushstring(L, content);
 
-		int ret = my->self->call(3, false);
-
-		return lua_tostring(L, -1);
+		return my->self->call(4, false);
 	});
 
 	return 1;
+}
+
+static int web_response(lua_State* L)
+{
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+
+	struct web *my = (struct web*)lua_touserdata(L, 1);
+	if (!my || !my->imp)
+	{
+		return luaL_error(L, "please new web first ...");
+	}
+
+	void* response = lua_touserdata(L, 2);
+
+	size_t len;
+	const char * data = luaL_checklstring(L, 3, &len);
+
+	my->imp->response(response, data, len);
+
+	return 0;
 }
 
 static int web_release(lua_State* L)
@@ -150,6 +170,7 @@ static int web(lua_State* L)
 	if (luaL_newmetatable(L, "web")) {
 		luaL_Reg l[] = {
 			{ "start", web_start },
+			{ "response", web_response },
 			{ "__gc", web_release },
 			{ NULL, NULL },
 		};
