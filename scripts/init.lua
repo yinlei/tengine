@@ -41,6 +41,19 @@ tengine.WARNING_MSG  = tengine.logger.WARNING_MSG
 tengine.ERROR_MSG    = tengine.logger.ERROR_MSG
 tengine.CRITICAL_MSG = tengine.logger.CRITICAL_MSG
 
+-- core
+tengine.core = require "tengine.core"
+tengine.actor = tengine.core.actor
+tengine.timer = tengine.core.timer
+tengine.sleep = tengine.core.sleep
+tengine.mysql = tengine.core.mysql
+tengine.redis = tengine.core.redis
+tengine.server = tengine.core.server
+tengine.channel = tengine.core.channel
+tengine.http = tengine.core.http
+tengine.web = tengine.core.web
+tengine.webserver = tengine.core.webserver
+
 -- helper
 tengine.helper = require "tengine.helper"
 tengine.bind = tengine.helper.bind
@@ -56,18 +69,6 @@ tengine.debug = require "tengine.debug"
 
 -- hotfix
 tengine.hotfix = require "tengine.hotfix"
-
--- core
-tengine.core = require "tengine.core"
-tengine.actor = tengine.core.actor
-tengine.timer = tengine.core.timer
-tengine.sleep = tengine.core.sleep
-tengine.mysql = tengine.core.mysql
-tengine.redis = tengine.core.redis
-tengine.server = tengine.core.server
-tengine.channel = tengine.core.channel
-tengine.http = tengine.core.http
-tengine.web = tengine.core.web
 
 setmetatable(tengine, {__index = {_VERSION = "0.0.1"}})
 
