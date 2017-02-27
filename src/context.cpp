@@ -72,17 +72,17 @@ namespace tengine
 
 		join();
 
-		if (net_executor_ != nullptr)
-		{
-			delete net_executor_;
-			net_executor_ = nullptr;
-		}
-
 		for (std::size_t i = 0; i < services_.size(); i++) {
 			delete services_[i];
 		}
 
 		services_.clear();
+
+		if (net_executor_ != nullptr)
+		{
+			delete net_executor_;
+			net_executor_ = nullptr;
+		}
 
 		if (config_)
 			lua_close(config_);
