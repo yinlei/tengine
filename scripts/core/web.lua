@@ -52,7 +52,7 @@ local handle = function(self, res, type, path, content)
             self.web:response(res, "Content-Type: application/json\r\n")
             self.web:response(res, "Access-Control-Allow-Origin: *\r\n")
             self.web:response(res, "Content-Length: " .. string_len(ret) .. "\r\n\r\n")
-            self.web:response(res, ret)
+            self.web:response(res, ret, 1)
         end
     end
 end

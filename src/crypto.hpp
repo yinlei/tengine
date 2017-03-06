@@ -13,7 +13,7 @@
 #include <istream>
 #include <vector>
 
-namespace tengine 
+namespace tengine
 {
     //TODO 2017: remove workaround for MSVS 2012
     #if _MSC_VER == 1700 //MSVS 2012 has no definition for round()

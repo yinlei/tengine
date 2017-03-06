@@ -166,7 +166,7 @@ namespace tengine
 			return -1;
 		}
 		*/
-		Network *network = new Network(*this);
+		HttpClient *network = new HttpClient(*this);
 		if (network == nullptr)
 			return -1;
 

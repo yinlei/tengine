@@ -5,19 +5,24 @@
 #include "service_proxy.hpp"
 #include "spin_lock.hpp"
 
+#include "http_client.hpp"
+#include "http_server.hpp"
+#include "ws_server.hpp"
+
 #include <thread>
 #include <map>
+#include <unordered_set>
 
 namespace tengine
 {
 	class Executor;
 
-	class Network : public Service
+	class HttpClient : public Service
 	{
 	public:
-		Network(Context& context);
+		HttpClient(Context& context);
 
-		virtual ~Network();
+		virtual ~HttpClient();
 
 		virtual int init(const char* name);
 
@@ -39,38 +44,42 @@ namespace tengine
 	};
 
 
-	class WebServer : public ServiceProxy
+	class HttpServer : public ServiceProxy
 	{
 	public:
-		static constexpr int WEBSERVER_KEY = 0;
+		static constexpr int HTTPSERVER_KEY = 0;
 
-		WebServer(Service *s);
+		HttpServer(Service *s);
 
-		~WebServer();
+		~HttpServer();
 
 		typedef std::function<int (void*, const char*,
 			const char*, const char*)> Handler;
 
 		int start(uint16_t port, Handler handler);
 
-		void response(void* response, const char* res, std::size_t size);
+		void response(void* response, const char* res, std::size_t size, bool remove = false);
 
 	private:
 		uint16_t port_;
 
-		void *server_;
+		SimpleWeb::HttpServer *server_;
 
 		std::thread *worker_;
+
+		std::map<void*, std::shared_ptr<SimpleWeb::HttpServer::Response>> responses_;
+
+		std::mutex mutex_;
 	};
 
-	class WebSocket : public ServiceProxy
+	class WebServer : public ServiceProxy
 	{
 	public:
-		static constexpr int WEBSOCKET_KEY = 0;
+		static constexpr int WEBSERVER_KEY = 0;
 
-		WebSocket(Service *s, uint16_t port);
+		WebServer(Service *s, uint16_t port);
 
-		~WebSocket();
+		~WebServer();
 
 		int start(const std::string& path);
 
@@ -79,13 +88,13 @@ namespace tengine
 	private:
 		uint16_t port_;
 
-		void *server_;
+		SimpleWeb::WebSocketServer *server_;
 
 		std::thread *worker_;
 
 		SpinLock session_lock_;
 
-		std::map<void*, void*> connections_;
+		std::map<void*, std::shared_ptr<SimpleWeb::HttpServer::Response>> connections_;
 	};
 
 }

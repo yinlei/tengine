@@ -9,7 +9,7 @@ static int http(lua_State* L)
 {
 	Context *context = (Context*)lua_touserdata(L, lua_upvalueindex(1));
 
-	Network *net_work = (Network*)context->query("Network");
+	HttpClient *net_work = (HttpClient*)context->query("Network");
 
 	if (net_work == nullptr)
 		return luaL_error(L, "no Network service");
@@ -57,7 +57,7 @@ static int http(lua_State* L)
 struct web
 {
 	SandBox *self;
-	WebServer* imp;
+	HttpServer* imp;
 	int callback;
 };
 
@@ -115,7 +115,14 @@ static int web_response(lua_State* L)
 	size_t len;
 	const char * data = luaL_checklstring(L, 3, &len);
 
-	my->imp->response(response, data, len);
+	bool remove = false;
+
+	if (!lua_isnoneornil(L, 4))
+	{
+		remove = true;
+	}
+
+	my->imp->response(response, data, len, remove);
 
 	return 0;
 }
@@ -132,7 +139,7 @@ static int web_release(lua_State* L)
 
 	luaL_unref(L, LUA_REGISTRYINDEX, my->callback);
 
-	lua_rawgetp(L, LUA_REGISTRYINDEX, &WebServer::WEBSERVER_KEY);
+	lua_rawgetp(L, LUA_REGISTRYINDEX, &HttpServer::HTTPSERVER_KEY);
 
 	lua_pushlightuserdata(L, my->imp);
 	lua_pushnil(L);
@@ -157,7 +164,7 @@ static int web(lua_State* L)
 
 	SandBox *self = (SandBox*)lua_touserdata(L, lua_upvalueindex(2));
 
-	WebServer *web_server = new WebServer(self);
+	HttpServer *web_server = new HttpServer(self);
 
 	if (web_server == nullptr)
 		return luaL_error(L, "create web server failed!!!");
@@ -182,11 +189,11 @@ static int web(lua_State* L)
 
 	lua_setmetatable(L, -2);
 
-	if (lua_rawgetp(L, LUA_REGISTRYINDEX, &WebServer::WEBSERVER_KEY) == LUA_TNIL) {
+	if (lua_rawgetp(L, LUA_REGISTRYINDEX, &HttpServer::HTTPSERVER_KEY) == LUA_TNIL) {
 		lua_pop(L, 1);
 		lua_createtable(L, 0, 2);
 		lua_pushvalue(L, -1);
-		lua_rawsetp(L, LUA_REGISTRYINDEX, &WebServer::WEBSERVER_KEY);
+		lua_rawsetp(L, LUA_REGISTRYINDEX, &HttpServer::HTTPSERVER_KEY);
 		lua_pushstring(L, "kv");
 		lua_setfield(L, -2, "__mode");
 		lua_pushvalue(L, -1);
@@ -208,7 +215,7 @@ static int web(lua_State* L)
 struct webserver
 {
 	SandBox *self;
-	WebSocket* imp;
+	WebServer* imp;
 	int on_open_ref;
 	int on_message_ref;
 	int on_close_ref;
@@ -288,7 +295,7 @@ static int webserver_release(lua_State* L)
 	luaL_unref(L, LUA_REGISTRYINDEX, my->on_close_ref);
 	luaL_unref(L, LUA_REGISTRYINDEX, my->on_error_ref);
 
-	lua_rawgetp(L, LUA_REGISTRYINDEX, &WebSocket::WEBSOCKET_KEY);
+	lua_rawgetp(L, LUA_REGISTRYINDEX, &WebServer::WEBSERVER_KEY);
 
 	lua_pushlightuserdata(L, my->imp);
 	lua_pushnil(L);
@@ -318,7 +325,7 @@ static int webserver(lua_State* L)
 
 	int port = (int)luaL_checknumber(L, 1);
 
-	WebSocket *web_socket = new WebSocket(self, port);
+	WebServer *web_socket = new WebServer(self, port);
 
 	if (web_socket == nullptr)
 		return luaL_error(L, "create web server failed!!!");
@@ -346,11 +353,11 @@ static int webserver(lua_State* L)
 
 	lua_setmetatable(L, -2);
 
-	if (lua_rawgetp(L, LUA_REGISTRYINDEX, &WebSocket::WEBSOCKET_KEY) == LUA_TNIL) {
+	if (lua_rawgetp(L, LUA_REGISTRYINDEX, &WebServer::WEBSERVER_KEY) == LUA_TNIL) {
 		lua_pop(L, 1);
 		lua_createtable(L, 0, 2);
 		lua_pushvalue(L, -1);
-		lua_rawsetp(L, LUA_REGISTRYINDEX, &WebSocket::WEBSOCKET_KEY);
+		lua_rawsetp(L, LUA_REGISTRYINDEX, &WebServer::WEBSERVER_KEY);
 		lua_pushstring(L, "kv");
 		lua_setfield(L, -2, "__mode");
 		lua_pushvalue(L, -1);
@@ -372,7 +379,7 @@ void SandBox::webserver_open(void* sender, int session)
 	lua_State *L = l_;
 	//lua_rawgetp(L, LUA_REGISTRYINDEX, message->sender);
 
-	lua_rawgetp(L, LUA_REGISTRYINDEX, &WebSocket::WEBSOCKET_KEY);
+	lua_rawgetp(L, LUA_REGISTRYINDEX, &WebServer::WEBSERVER_KEY);
 
 	lua_rawgetp(L, -1, sender);
 
@@ -392,7 +399,7 @@ void SandBox::webserver_message(void* sender, int session, const char* data, std
 {
 	lua_State *L = l_;
 	//lua_rawgetp(L, LUA_REGISTRYINDEX, message->sender);
-	lua_rawgetp(L, LUA_REGISTRYINDEX, &WebSocket::WEBSOCKET_KEY);
+	lua_rawgetp(L, LUA_REGISTRYINDEX, &WebServer::WEBSERVER_KEY);
 
 	lua_rawgetp(L, -1, sender);
 
@@ -415,7 +422,7 @@ void SandBox::webserver_close(void* sender, int session, int status, const std::
 {
 	lua_State *L = l_;
 	//lua_rawgetp(L, LUA_REGISTRYINDEX, message->sender);
-	lua_rawgetp(L, LUA_REGISTRYINDEX, &WebSocket::WEBSOCKET_KEY);
+	lua_rawgetp(L, LUA_REGISTRYINDEX, &WebServer::WEBSERVER_KEY);
 
 	lua_rawgetp(L, -1, sender);
 
@@ -438,7 +445,7 @@ void SandBox::webserver_error(void* sender, int session, const std::string& erro
 {
 	lua_State *L = l_;
 	//lua_rawgetp(L, LUA_REGISTRYINDEX, message->sender);
-	lua_rawgetp(L, LUA_REGISTRYINDEX, &WebSocket::WEBSOCKET_KEY);
+	lua_rawgetp(L, LUA_REGISTRYINDEX, &WebServer::WEBSERVER_KEY);
 
 	lua_rawgetp(L, -1, sender);
 
