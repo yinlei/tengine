@@ -100,6 +100,23 @@ if _OPTIONS["lua"] == "lua53" then
 			"./deps/lua/src/lua.c",
 		}
 
+
+	project "luac"
+		kind "ConsoleApp"
+		language "C"
+		targetdir "./bin"
+		includedirs {
+			"./deps/lua/src",
+		}
+		
+		files {
+			"./deps/lua/src/*.c",
+		}
+		
+		removefiles {
+			"./deps/lua/src/lua.c",
+		}
+
 end
 
 project "lpeg"
