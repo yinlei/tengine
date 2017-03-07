@@ -44,7 +44,7 @@ local handle = function(self, res, type, path, content)
     if handler then
         local ok, ret = pcall(handler, content)
         if not ok  then
-            self.web:response(res, '')
+            self.web:response(res, '', 1)
             error(ret)
         else
             --self.web:response(res, string_format(HEADER, string_len(ret)))
