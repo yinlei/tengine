@@ -207,6 +207,19 @@ namespace tengine
 				end\n \
 			end\n \
 			if not main then\n \
+				for p in string.gmatch(string.format('./tengine/%s/init.lua', name), '([^;]+);*') do\n \
+					local filename = string.gsub(p, '?', name)\n \
+					local f, msg = loadfile(filename)\n \
+					if not f then\n \
+						table.insert(errs, msg)\n \
+					else\n \
+						pattern = p\n \
+						main = f\n \
+						break\n \
+					end\n \
+				end\n \
+			end\n \
+			if not main then\n \
 				error(table.concat(errs, ' '))\n \
 			end\n \
 			main(table.unpack(args))\n \

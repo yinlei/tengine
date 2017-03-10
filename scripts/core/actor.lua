@@ -123,6 +123,14 @@ function actor.newservice(name, ...)
 	return c.start(name, args)
 end
 
+function actor.queryservice(name)
+    if type(name) ~= 'string' then
+        error('query service need string name')
+    end
+
+    return c.query(name)
+end
+
 function actor.self()
     return __Service__
 end
