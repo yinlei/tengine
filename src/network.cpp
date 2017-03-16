@@ -115,9 +115,7 @@ namespace tengine
 		if (server_ == nullptr)
 			return 1;
 
-		SimpleWeb::HttpServer *server = static_cast<SimpleWeb::HttpServer*>(server_);
-
-		server->default_resource["GET"] =
+		server_->default_resource["GET"] =
 			[=](std::shared_ptr<SimpleWeb::HttpServer::Response> response, 
 				std::shared_ptr<SimpleWeb::HttpServer::Request> request)
 		{
@@ -154,7 +152,7 @@ namespace tengine
 
 		};
 
-		server->default_resource["POST"] =
+		server_->default_resource["POST"] =
 			[=](std::shared_ptr<SimpleWeb::HttpServer::Response> response, 
 				std::shared_ptr<SimpleWeb::HttpServer::Request> request)
 		{
@@ -190,9 +188,9 @@ namespace tengine
 
 		};
 
-		worker_ = new std::thread([&server]
+		worker_ = new std::thread([this]
 		{
-			server->start();
+			this->server_->start();
 		});
 
 		return 0;
@@ -263,9 +261,7 @@ namespace tengine
 		if (server_ == nullptr)
 			return 1;
 
-		SimpleWeb::WebSocketServer *server = static_cast<SimpleWeb::WebSocketServer*>(server_);
-
-		auto& s = (*server).endpoint["^/" + path +"/?$"];
+		auto& s = (*server_).endpoint["^/" + path +"/?$"];
 
 		s.on_open=[this](std::shared_ptr<SimpleWeb::WebSocketServer::Connection> connection) {
 			
@@ -299,9 +295,9 @@ namespace tengine
 				this->host(), this->host(), (void*)this, (int)connection.get(), ec.message());
 		};
 
-		worker_ = new std::thread([&server]
+		worker_ = new std::thread([this]
 		{
-			server->start();
+			this->server_->start();
 		});
 
 		return 0;
