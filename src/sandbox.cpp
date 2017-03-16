@@ -49,7 +49,7 @@ int luaopen_tengine(lua_State *L)
 		{ "processinfo", process_info },
 
 		{ "http", http },
-		{ "web", web},
+		{ "web", web },
 		{ "webserver", webserver },
 		{ "server", server },
 		{ "udp_server", udp_server },

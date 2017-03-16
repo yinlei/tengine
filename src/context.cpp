@@ -155,7 +155,6 @@ namespace tengine
 			return -1;
 		}
 
-		/*
 		Node *node = new Node(*this);
 		if (node == nullptr)
 			return -1;
@@ -165,7 +164,7 @@ namespace tengine
 			delete node;
 			return -1;
 		}
-		*/
+		
 		HttpClient *network = new HttpClient(*this);
 		if (network == nullptr)
 			return -1;

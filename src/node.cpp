@@ -312,7 +312,7 @@ namespace tengine
 			}
 			else
 			{
-				//std::clog << "ignoring: " << discovered_service << std::endl;
+				std::clog << "ignoring: " << discovered_service << std::endl;
 			}
 		}
 
@@ -423,7 +423,7 @@ namespace tengine
 			node_name_ = asio::ip::host_name(error_code);
 		}
 
-		char key[256];
+		char key[256] = { 0 };
 
 		snprintf(key, sizeof(key), "%s.register_name", name);
 
@@ -435,20 +435,18 @@ namespace tengine
 
 		if (context_.config(key, 0) > 0)
 		{
-
-		}
-
-		discover_ = new Discoverer(io_service_, "node", [](const Discoverer::services& services)
-		{
-			//std::clog << "discover: " << *services.begin() << std::endl;
-			std::clog << "------------------------------" << std::endl;
-			for (Discoverer::services::iterator iter = services.begin(); iter != services.end(); ++iter)
+			discover_ = new Discoverer(io_service_, "node", [](const Discoverer::services& services)
 			{
-				//if(iter->)
-				std::clog << "discover: " << *iter << std::endl;
-			}
-			std::clog << "------------------------------" << std::endl;
-		});
+				//std::clog << "discover: " << *services.begin() << std::endl;
+				std::clog << "------------------------------" << std::endl;
+				for (Discoverer::services::iterator iter = services.begin(); iter != services.end(); ++iter)
+				{
+					//if(iter->)
+					std::clog << "discover: " << *iter << std::endl;
+				}
+				std::clog << "------------------------------" << std::endl;
+			});
+		}
 
 		this->announce("node", 1);
 
