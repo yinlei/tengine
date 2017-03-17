@@ -11,8 +11,7 @@ local unpack = unpack or table.unpack
 
 local c = tengine.c
 
-local actor = tengine.actor
---local actor = require(_PACKAGE .. "/actor")
+local actor = require(_PACKAGE .. "/actor")
 local co_pool = require(_PACKAGE .. "/pool")
 
 local sleep = function(delay)
