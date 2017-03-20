@@ -30,7 +30,7 @@ static int start(lua_State *L)
 	if (name == NULL)
 		return luaL_error(L, "service name ...");
 
-	SandBox *sandbox = context->LaunchSandBox(name, args);
+	SandBox *sandbox = context->launch(name, args);
 	if (sandbox == NULL)
 		return luaL_error(L, "service init failed!");
 

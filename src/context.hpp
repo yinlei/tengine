@@ -41,7 +41,7 @@ namespace tengine
 
 		void stop();
 
-		SandBox *LaunchSandBox(const char *name, const char* args);
+		SandBox *launch(const char *name, const char* args);
 
 		int register_service(Service *service);
 
@@ -51,9 +51,9 @@ namespace tengine
 
 		Service *query(const char *name);
 
-		const char* ConfigString(const char* key);
+		const char* config(const char* key);
 
-		const char* ConfigString(const char* key, const char* opt);
+		const char* config(const char* key, const char* opt);
 
 		template<class T>
 		T config(const char* key, T value);
@@ -92,7 +92,7 @@ namespace tengine
 	template<class T>
 	T Context::config(const char* key, T value)
 	{
-		const char* result = ConfigString(key);
+		const char* result = config(key);
 
 		if (result != NULL)
 			return result;
@@ -103,7 +103,7 @@ namespace tengine
 	template<>
 	inline int Context::config(const char* key, int value)
 	{
-		const char* result = ConfigString(key);
+		const char* result = config(key);
 
 		if (result != NULL)
 			return ::atoi(result);
@@ -114,7 +114,7 @@ namespace tengine
 	template<>
 	inline double Context::config(const char* key, double value)
 	{
-		const char* result = ConfigString(key);
+		const char* result = config(key);
 
 		if (result != NULL)
 			return ::atof(result);

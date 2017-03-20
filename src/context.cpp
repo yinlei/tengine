@@ -213,7 +213,7 @@ namespace tengine
 			net_executor_->stop();
 	}
 
-	SandBox *Context::LaunchSandBox(const char *name, const char *args)
+	SandBox *Context::launch(const char *name, const char *args)
 	{
 		SandBox *sand_box = new SandBox(*this, args);
 		if (sand_box == nullptr)
@@ -287,7 +287,7 @@ namespace tengine
 		return nullptr;
 	}
 
-	const char* Context::ConfigString(const char* key)
+	const char* Context::config(const char* key)
 	{
 		char buff[512] = { 0 };
 
@@ -329,9 +329,9 @@ namespace tengine
 		return result;
 	}
 
-	const char* Context::ConfigString(const char* key, const char* opt)
+	const char* Context::config(const char* key, const char* opt)
 	{
-		const char* result = ConfigString(key);
+		const char* result = config(key);
 
 		if (result != NULL)
 			return result;
