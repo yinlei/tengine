@@ -76,7 +76,7 @@ local add = function(self, start, interval, count, f, ...)
 end
 
 local del = function(self, id)
-    if not id then
+    if id then
         self.deleted[id] = 1
     end
 end
